@@ -1,5 +1,4 @@
 import { GeoJSON } from "geojson";
-import {DOMParser} from "xmldom";
 
 interface MetaData {
 
