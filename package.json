@@ -1,0 +1,23 @@
+{
+    "name": "@dwayneparton/geojson-to-gpx",
+    "version": "1.0.0",
+    "description": "Converts GEOjson to GPX",
+    "main": "index.ts",
+    "scripts": {
+        "test": "test"
+    },
+    "keywords": [
+        "geojson",
+        "gpx"
+    ],
+    "author": "Dwayne Parton",
+    "license": "MIT",
+    "dependencies": {
+        "@types/geojson": "^7946.0.10",
+        "xmldom": "^0.6.0"
+    },
+    "devDependencies": {
+        "@types/xmldom": "^0.1.31",
+        "typescript": "^4.9.4"
+    }
+}
