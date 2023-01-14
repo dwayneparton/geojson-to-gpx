@@ -11,7 +11,7 @@ interface KeyValue {
   value : string,
 }
 
-export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, options ?: Options): string
+export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, options ?: Options): Document
 {
   const doc = new Document();
   const version = options?.version || "0.1";
@@ -165,5 +165,5 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
     });
   }
   doc.appendChild(gpx);
-  return new XMLSerializer().serializeToString(doc);
+  return doc;
 }
