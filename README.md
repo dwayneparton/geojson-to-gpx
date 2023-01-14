@@ -1,11 +1,19 @@
 # Convert GeoJson to GPX
 
-This package *NOT READY FOR USE*
+This package in in the concept phase and is *NOT READY FOR USE*
 
-Designed to be a browser library. Will interpret a geojson object into a gpx file.
+Designed to be a browser library. Will interpret a geojson object into a XMLDocument.
+
+## Installation
+
+```sh
+npm install @dwayneparton/geojson-to-gpx
+```
+
+## Example
 
 ```js
-import GeoJsonToGpx from "geojson-to-gpx"
+import GeoJsonToGpx from "@dwayneparton/geojson-to-gpx"
 
 const options = {
   metadata: {
