@@ -7,27 +7,36 @@ Designed to be a browser library. Will interpret a geojson object into a gpx fil
 ```js
 import GeoJsonToGpx from "geojson-to-gpx"
 
+const options = {
+  metadata: {
+    name: 'A grand adventure',
+    author: {
+      name: 'Dwayne Parton'
+    }
+  }
+}
+
 const geojson = { 
   type: "Feature",
   properties : {
-    name : 'Valid GeoJson'
+    name : 'Slow journey from null island'
   },
   geometry: {
     type: "LineString",
     coordinates: [
-      [102.0, 0.0],
-      [103.0, 1.0],
-      [104.0, 0.0],
-      [105.0, 1.0]
+      [0.0, 0.0],
+      [0.0, 1.0],
+      [0.0, 2.0],
+      [0.0, 3.0]
     ]
   },
 };
 
 // Will convert geojson into xml document
-const gpx = GeoJsonToGpx(geojson);
+const gpx = GeoJsonToGpx(geojson, options);
 
 // convert document to string or post process it
-const gpxString = new XMLSerializer().serializeToString(doc);
+const gpxString = new XMLSerializer().serializeToString(gpx);
 
 // @see https://stackoverflow.com/questions/10654971/create-text-file-from-string-using-js-and-html5
 const link = document.createElement('a');
