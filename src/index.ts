@@ -1,5 +1,4 @@
 import { Feature, FeatureCollection, GeoJsonProperties, Position } from "geojson";
-
 interface Options {
   creator ?: string,
   version ?: string,
@@ -14,8 +13,10 @@ interface KeyValue {
 export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, options ?: Options): XMLDocument
 {
   const doc = document.implementation.createDocument("http://www.topografix.com/GPX/1/1", "");
-  const version = options?.version || "0.1";
-  const creator = options?.creator || "geojson-to-gpx";
+  const packageVersion = '0.0.3';
+  const packageName = "@dwayneparton/geojson-to-gpx";
+  const version = options?.version || packageVersion;
+  const creator = options?.creator || packageName;
 
   const gpx = doc.createElement("gpx");
   gpx.setAttribute("version", version);
