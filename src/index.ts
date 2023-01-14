@@ -165,6 +165,5 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
     });
   }
   doc.appendChild(gpx);
-  console.log(new XMLSerializer().serializeToString(doc));
   return new XMLSerializer().serializeToString(doc);
 }
