@@ -1,5 +1,5 @@
 
-import geojsonToGpx from "../src/index";
+import GeoJsonToGpx from "../src/index";
 import { GeoJSON } from "geojson";
 
 const sampleGeoJsonLine : GeoJSON = { 

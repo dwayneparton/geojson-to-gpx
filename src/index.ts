@@ -15,7 +15,7 @@ interface KeyValue {
   value : string,
 }
 
-export default function geojsonToGpx(geoJson: Feature | FeatureCollection, options ?: Options): string
+export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, options ?: Options): string
 {
   const doc = document.implementation.createDocument("", "");
   const version = options?.version || "0.1";
