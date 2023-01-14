@@ -67,14 +67,10 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
   function addPt(type: "wpt" | "trkpt", position: Position, properties ?: GeoJsonProperties): Element{
     const [lon, lat, ele, time] = position;
     const wpt = doc.createElement(type);
-    wpt.setAttribute("lat", `${lat}`);
-    wpt.setAttribute("lon", `${lon}`);
-    if(ele){
-      addElement(wpt, 'ele', `${ele}`);
-    }
-    if(time){
-      addElement(wpt, 'time', `${time}`);
-    }
+    wpt.setAttribute('lat', String(lat));
+    wpt.setAttribute('lon', String(lon));
+    addElement(wpt, 'ele', String(ele));
+    addElement(wpt, 'time', String(time));
     if(properties){
       Object.keys(properties).forEach(key => {
         const value = properties[key];
