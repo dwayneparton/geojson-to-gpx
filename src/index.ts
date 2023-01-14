@@ -1,9 +1,5 @@
 import { Feature, FeatureCollection, GeoJsonProperties, Position } from "geojson";
 
-interface MetaData {
-  [name: string]: string
-}
-
 interface Options {
   creator ?: string,
   version ?: string,
@@ -17,12 +13,21 @@ interface KeyValue {
 
 export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, options ?: Options): string
 {
-  const doc = document.implementation.createDocument("", "");
+  const doc = new Document();
   const version = options?.version || "0.1";
-  const creator = options?.creator || "Dwayne Parton";
+  const creator = options?.creator || "geojson-to-gpx";
+
+  const gpx = doc.createElement("gpx");
+  gpx.setAttribute("version", version);
+  gpx.setAttribute("creator", creator);
+  gpx.setAttribute("xmlns", "http://www.topografix.com/GPX/1/1");
+
   const meta = options?.metadata || {};
 
-  function addElement(el: Element, tagName : string,  content ?: string, properties?: KeyValue[]){
+  function addElement(el: Element, tagName : string,  content: string | undefined = '', properties?: KeyValue[]){
+    if(content === undefined){
+      return;
+    }
     const element = doc.createElement(tagName);
     if(content){
       const contentEl = doc.createTextNode(content);
@@ -123,17 +128,29 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
       gpx.appendChild(trk);
     }
   }
-  
-  // Start building
-  const gpx = doc.createElementNS("http://www.topografix.com/GPX/1/1", "gpx");
-  gpx.setAttribute("version", version);
-  gpx.setAttribute("creator", creator);
 
   if(meta){ 
     const metadata = doc.createElement("metadata");
-    Object.keys(meta).forEach((key: string) => {
-      addElement(metadata, key, meta[key], []);
-    })
+    addElement(metadata, 'name', meta?.name);
+    addElement(metadata, 'desc', meta?.desc);
+    if(meta?.author){
+      const author = doc.createElement("author");
+      addElement(author, 'name', meta?.author?.name);
+      addElement(author, 'email', meta?.author?.email);
+      addElement(author, 'link', meta?.author?.link);
+      metadata.appendChild(author);
+    }
+    if(meta?.copyright){
+      const copyright = doc.createElement("copyright");
+      if(meta?.copyright?.author){
+        copyright.setAttribute('author', meta?.copyright?.author);
+      }
+      addElement(copyright, 'year', meta?.copyright?.license);
+      addElement(copyright, 'license', meta?.copyright?.year);
+      metadata.appendChild(copyright);
+    }
+    addElement(metadata, 'time', meta?.time);
+    addElement(metadata, 'keywords', meta?.keywords);
     gpx.appendChild(metadata);
   }
 
@@ -148,5 +165,6 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
     });
   }
   doc.appendChild(gpx);
+  console.log(new XMLSerializer().serializeToString(doc));
   return new XMLSerializer().serializeToString(doc);
 }

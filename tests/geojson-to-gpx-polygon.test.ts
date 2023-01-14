@@ -21,6 +21,6 @@ const sampleGeoJsonLine : GeoJSON = {
 
 // uses js dom
 test('converts geojson linestring to gpx', () => {
-  const gpx = geojsonToGpx(sampleGeoJsonLine, {creator: 'Dwayne Parton', metadata: {name: 'Test'}});
+  const gpx = GeoJsonToGpx(sampleGeoJsonLine, {creator: 'Dwayne Parton', metadata: {name: 'Test'}});
   expect(gpx).not.toBeNull();
 });
