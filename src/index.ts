@@ -11,9 +11,9 @@ interface KeyValue {
   value : string,
 }
 
-export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, options ?: Options): Document
+export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, options ?: Options): XMLDocument
 {
-  const doc = new Document();
+  const doc = document.implementation.createDocument("http://www.topografix.com/GPX/1/1", "");
   const version = options?.version || "0.1";
   const creator = options?.creator || "geojson-to-gpx";
 
