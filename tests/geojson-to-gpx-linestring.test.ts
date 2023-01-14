@@ -2,24 +2,34 @@
 import GeoJsonToGpx from "../src/index";
 import { GeoJSON } from "geojson";
 
-const sampleGeoJsonLine : GeoJSON = { 
+const options = {
+  metadata: {
+    name: 'A grand adventure',
+    author: {
+      name: 'Dwayne Parton'
+    }
+  }
+}
+
+const geojson : GeoJSON = { 
   type: "Feature",
   properties : {
-    name : 'Test'
+    name : 'Slow journey from null island'
   },
   geometry: {
     type: "LineString",
     coordinates: [
-      [102.0, 0.0],
-      [103.0, 1.0],
-      [104.0, 0.0],
-      [105.0, 1.0]
+      [0.0, 0.0],
+      [0.0, 1.0],
+      [0.0, 2.0],
+      [0.0, 3.0]
     ]
   },
 };
 
+
 // uses js dom
 test('converts geojson linestring to gpx', () => {
-  const gpx = GeoJsonToGpx(sampleGeoJsonLine, {creator: 'Dwayne Parton', metadata: {name: 'Here is some meta data'}});
+  const gpx = GeoJsonToGpx(geojson, options);
   expect(gpx).not.toBeNull();
 });
