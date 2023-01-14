@@ -1,8 +1,20 @@
 {
     "name": "@dwayneparton/geojson-to-gpx",
-    "version": "0.0.6",
+    "version": "0.0.7",
     "description": "Converts GeoJson to GPX",
     "main": "dist/index.js",
+    "module": "dist/index.js",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "import": "./dist/index.js"
+        }
+    },
+    "types": "./main.d.ts",
+    "files": [
+        "dist",
+        "main.d.ts"
+    ],
     "scripts": {
         "start": "npx tsc -w",
         "build": "npx tsc",

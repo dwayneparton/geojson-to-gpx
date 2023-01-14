@@ -1,19 +1,11 @@
 import { Feature, FeatureCollection, GeoJsonProperties, Position } from "geojson";
-interface Options {
-  creator ?: string,
-  version ?: string,
-  metadata ?: MetaData,
-}
-
-interface KeyValue {
-  key : string,
-  value : string,
-}
 
 export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, options ?: Options): XMLDocument
 {
   const doc = document.implementation.createDocument("http://www.topografix.com/GPX/1/1", "");
-  const packageVersion = '0.0.3';
+  const instruct = doc.createProcessingInstruction('xml', 'version="1.0" encoding="UTF-8"');
+  doc.append(instruct);
+  const packageVersion = '0.0.7';
   const packageName = "@dwayneparton/geojson-to-gpx";
   const version = options?.version || packageVersion;
   const creator = options?.creator || packageName;
@@ -25,20 +17,13 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
 
   const meta = options?.metadata || {};
 
-  function addElement(el: Element, tagName : string,  content: string | undefined = '', properties?: KeyValue[]){
+  function addElement(el: Element, tagName : string,  content: string | undefined){
     if(content === undefined){
       return;
     }
     const element = doc.createElement(tagName);
-    if(content){
-      const contentEl = doc.createTextNode(content);
-      element.appendChild(contentEl);
-    }
-    if(properties){
-      properties.forEach(prop => {
-        element.setAttribute(prop.key, prop.value)
-      });
-    }
+    const contentEl = doc.createTextNode(content);
+    element.appendChild(contentEl);
     el.appendChild(element);
   }
   
