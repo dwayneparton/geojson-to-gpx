@@ -1,6 +1,17 @@
 # Convert GeoJson to GPX
 
-Designed to be a browser library. Will interpret a geojson object into a XMLDocument.
+Designed to be a browser library. Will interpret a geojson object into a gpx XMLDocument. From there you can convert it to a string for download or post process the document.
+
+## Contributions
+
+Contributions welcome.
+
+### Goals and Parameters
+
+* 0 dependency
+* Lightweight
+* i/o - GeoJson -> XMLDocument
+* Schema - https://www.topografix.com/GPX/1/1/
 
 ## Installation
 
@@ -13,16 +24,20 @@ npm install @dwayneparton/geojson-to-gpx
 ### GeoJson
 
 * Feature
-* FeatureCollection
+* FeatureCollection - each feature(LineSting|MultiLineString) is interpreted into it's own trk, (Point|MultiPoint) will be new wpt
 
 ### Geometries
 
 * Point
-* MultiPoint
+* MultiPoint - adds wpt for each point
 * LineString
-* MultiLineString
+* MultiLineString - each link string is broken out into a net trkseg
+
+Incompatible Geometries are ignored. Why? The GPX format is designed for storing waypoints, tracks, and routes.
 
 ## Example
+
+This examples converts a geojson object to a gpx file for users to download.
 
 ```js
 import GeoJsonToGpx from "@dwayneparton/geojson-to-gpx"
