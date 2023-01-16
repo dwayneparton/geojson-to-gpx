@@ -5,7 +5,7 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
   const doc = document.implementation.createDocument("http://www.topografix.com/GPX/1/1", "");
   const instruct = doc.createProcessingInstruction('xml', 'version="1.0" encoding="UTF-8"');
   doc.append(instruct);
-  const packageVersion = '0.0.10';
+  const packageVersion = '0.0.12';
   const packageName = "@dwayneparton/geojson-to-gpx";
   const version = options?.version || packageVersion;
   const creator = options?.creator || packageName;
@@ -15,12 +15,12 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
   gpx.setAttribute("creator", creator);
   gpx.setAttribute("xmlns", "http://www.topografix.com/GPX/1/1");
 
-  function addElement(el: Element, tagName : string,  content: string | undefined){
+  function addElement(el: Element, tagName : string,  content: string | number | undefined){
     if(content === undefined){
       return;
     }
     const element = doc.createElement(tagName);
-    const contentEl = doc.createTextNode(content);
+    const contentEl = doc.createTextNode(String(content));
     element.appendChild(contentEl);
     el.appendChild(element);
   }
@@ -52,8 +52,8 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
     const wpt = doc.createElement(type);
     wpt.setAttribute('lat', String(lat));
     wpt.setAttribute('lon', String(lon));
-    addElement(wpt, 'ele', String(ele));
-    addElement(wpt, 'time', String(time));
+    addElement(wpt, 'ele', ele);
+    addElement(wpt, 'time', time);
     if(properties){
       Object.keys(properties).forEach(key => {
         const value = properties[key];
