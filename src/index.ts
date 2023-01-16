@@ -5,7 +5,7 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
   const doc = document.implementation.createDocument("http://www.topografix.com/GPX/1/1", "");
   const instruct = doc.createProcessingInstruction('xml', 'version="1.0" encoding="UTF-8"');
   doc.append(instruct);
-  const packageVersion = '0.0.8';
+  const packageVersion = '0.0.9';
   const packageName = "@dwayneparton/geojson-to-gpx";
   const version = options?.version || packageVersion;
   const creator = options?.creator || packageName;
@@ -14,8 +14,6 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
   gpx.setAttribute("version", version);
   gpx.setAttribute("creator", creator);
   gpx.setAttribute("xmlns", "http://www.topografix.com/GPX/1/1");
-
-  const meta = options?.metadata || {};
 
   function addElement(el: Element, tagName : string,  content: string | undefined){
     if(content === undefined){
@@ -111,7 +109,8 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
     }
   }
 
-  if(meta){ 
+  if(options?.metadata){ 
+    const meta = options.metadata;
     const metadata = doc.createElement("metadata");
     addElement(metadata, 'name', meta?.name);
     addElement(metadata, 'desc', meta?.desc);
