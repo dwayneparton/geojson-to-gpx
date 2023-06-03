@@ -1,8 +1,8 @@
 
 import GeoJsonToGpx from "../src/index";
-import { GeoJSON } from "geojson";
+import { Feature, MultiLineString } from "geojson";
 
-const sampleGeoJsonLine : GeoJSON = { 
+const geojson : Feature<MultiLineString> = { 
   type: "Feature",
   properties : {
     name : 'Test'
@@ -23,8 +23,24 @@ const sampleGeoJsonLine : GeoJSON = {
   },
 };
 
-// uses js dom
-test('converts geojson linestring to gpx', () => {
-  const gpx = GeoJsonToGpx(sampleGeoJsonLine, {creator: 'Dwayne Parton', metadata: {name: 'Test'}});
+const gpx = GeoJsonToGpx(geojson);
+
+test('should not be null', () => {
   expect(gpx).not.toBeNull();
+});
+
+test('should have correct trk count', () => {
+  const trk = gpx.querySelectorAll('trk');
+  expect(trk).toHaveLength(1);
+});
+
+test('should have correct trkseg count', () => {
+  const trkseg = gpx.querySelectorAll('trkseg');
+  expect(trkseg).toHaveLength(geojson.geometry.coordinates.length);
+});
+
+test('should have correct trkpt count', () => {
+  const trkpt = gpx.querySelectorAll('trkpt');
+  const length = geojson.geometry.coordinates.reduce((prev, curr) => prev + curr.length, 0)
+  expect(trkpt).toHaveLength(length);
 });
