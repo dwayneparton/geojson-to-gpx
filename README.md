@@ -1,5 +1,7 @@
 # Convert GeoJson to GPX
 
+[![codecov](https://codecov.io/gh/dwayneparton/geojson-to-gpx/branch/master/graph/badge.svg?token=6M670T9Z3Z)](https://codecov.io/gh/dwayneparton/geojson-to-gpx)
+
 Designed to be a browser library. Will interpret a geojson object into a gpx XMLDocument. From there you can convert it to a string for download or post process the document.
 
 ## Contributions
