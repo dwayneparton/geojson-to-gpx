@@ -1,29 +1,29 @@
-interface Bounds {
+declare interface Bounds {
   minlat: string,
   minlon: string,
   maxlat: string,
   maxlon: string
 }
 
-interface Copyright {
+declare interface Copyright {
   author?: string,
   year?: string,
   license?: string
 }
 
-interface Link {
+declare interface Link {
   href?: string,
   text?: string,
   type?: string
 }
 
-interface Person {
+declare interface Person {
   name?: string,
   email?: string,
   link?: LinkType
 }
 
-interface MetaData {
+declare interface MetaData {
   name?: string,
   desc?: string,
   author?: Person,
@@ -34,13 +34,13 @@ interface MetaData {
   bounds?: Bounds,
 }
 
-interface Options {
+declare interface Options{
   creator ?: string,
   version ?: string,
   metadata ?: MetaData,
 }
  
-interface KeyValue {
+declare interface KeyValue {
   key : string,
   value : string,
 }

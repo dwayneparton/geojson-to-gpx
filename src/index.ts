@@ -66,7 +66,7 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
     return wpt;
   }
   
-  function addFeature(gpx: Element, feature: GeoJSON.Feature) : void{
+  function addFeature(gpx: Element, feature: Feature) : void{
     const {geometry, properties} = feature;
     const {type} = geometry;
   
@@ -81,7 +81,7 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
   
     if(type === 'MultiPoint'){
       const {coordinates} = geometry;
-      coordinates.forEach((coord) => {
+      coordinates.forEach((coord: Position) => {
         gpx.appendChild(addPt("wpt", coord, properties));
       })
     }
@@ -100,7 +100,7 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
       const {coordinates} = geometry;
       const trk = addTrk(properties);
       if(type === 'MultiLineString'){
-        coordinates.forEach((pos) =>{
+        coordinates.forEach((pos: Position[]) =>{
           const trkseg = addTrkSeg(pos);
           trk.appendChild(trkseg);
         })
@@ -141,7 +141,7 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
   }
   if(type === 'FeatureCollection'){
     const {features} = geoJson;
-    features.forEach(feature => {
+    features.forEach((feature: Feature) => {
       addFeature(gpx, feature);
     });
   }

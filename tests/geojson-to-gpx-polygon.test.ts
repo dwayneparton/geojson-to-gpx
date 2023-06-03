@@ -1,8 +1,8 @@
 
 import GeoJsonToGpx from "../src/index";
-import { GeoJSON } from "geojson";
+import { Feature, Polygon } from "geojson";
 
-const sampleGeoJsonLine : GeoJSON = { 
+const geojson : Feature<Polygon> = { 
   type: "Feature",
   properties : {
     name : 'Test'
@@ -19,8 +19,8 @@ const sampleGeoJsonLine : GeoJSON = {
   },
 };
 
-// uses js dom
-test('converts geojson linestring to gpx', () => {
-  const gpx = GeoJsonToGpx(sampleGeoJsonLine, {creator: 'Dwayne Parton', metadata: {name: 'Test'}});
+const gpx = GeoJsonToGpx(geojson);
+
+test('should not be null', () => {
   expect(gpx).not.toBeNull();
 });
