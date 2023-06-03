@@ -1,20 +1,36 @@
 import { Feature, FeatureCollection, GeoJsonProperties, Position } from "geojson";
 
+/**
+ * Interpreting GeoJSON into GPX is lossy
+ * It can not be interpreted back into the exact same GeoJSON
+ * However, it is still a useful format for many people
+ * and is popular with trail runners, race coordinators, and more
+ * @param geoJson Feature | FeatureCollection
+ * @param options Options
+ * @returns XMLDocument
+ */
 export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, options ?: Options): XMLDocument
 {
+  // Create root XMLDocument
   const doc = document.implementation.createDocument("http://www.topografix.com/GPX/1/1", "");
   const instruct = doc.createProcessingInstruction('xml', 'version="1.0" encoding="UTF-8"');
   doc.append(instruct);
-  const packageVersion = '0.0.13';
-  const packageName = "@dwayneparton/geojson-to-gpx";
-  const version = options?.version || packageVersion;
-  const creator = options?.creator || packageName;
 
+  // Set up default options
+  const defaultPackageVersion = '0.0.15';
+  const defaultPackageName = "@dwayneparton/geojson-to-gpx";
+  const version = options?.version || defaultPackageVersion;
+  const creator = options?.creator || defaultPackageName;
+
+  // Set up base GPX Element
   const gpx = doc.createElement("gpx");
   gpx.setAttribute("version", version);
   gpx.setAttribute("creator", creator);
   gpx.setAttribute("xmlns", "http://www.topografix.com/GPX/1/1");
 
+  /**
+   * Creates an element with content and appends it to the parent
+   */
   function addElement(el: Element, tagName : string,  content: string | number | undefined){
     if(content === undefined){
       return;
@@ -25,60 +41,93 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
     el.appendChild(element);
   }
   
+  /**
+   * Represents a track - an ordered list of points describing a path.
+   */
   function addTrk(properties ?: GeoJsonProperties): Element{
-    const wpt = doc.createElement('trk');
+    const el = doc.createElement('trk');
     if(properties){
       Object.keys(properties).forEach(key => {
         const value = properties[key];
         const supports = ['name', 'desc', 'link', 'src', 'type'];
         if(typeof value === 'string' && supports.includes(key)){
-          addElement(wpt, key, value);
+          addElement(el, key, value);
         }
       });
     }
-    return wpt;
+    return el;
   }
   
+  /**
+   * Takes an position array and created a track segment
+   * <trkseg> ...trkpts </trkseg>
+   * A Track Segment holds a list of Track Points which are logically connected in order.
+   * To represent a single GPS track where GPS reception was lost,
+   * or the GPS receiver was turned off, 
+   * start a new Track Segment for each continuous span of track data
+   */
   function addTrkSeg(coordinates: Position[]): Element{
-    const trkseg = doc.createElement('trkseg');
+    const el = doc.createElement('trkseg');
     coordinates.forEach((point) => {
-      trkseg.appendChild(addPt("trkpt", point));
+      el.appendChild(addPt("trkpt", point));
     })
-    return trkseg;
+    return el;
   }
   
+  /**
+   * Creates:
+   * <wpt|trkpt lat="" lon="">
+   *     <ele>{ele}</ele>
+   *     <time>{time}</time>
+   * </wpt|trkpt>
+   * These are compatible elements
+   */
   function addPt(type: "wpt" | "trkpt", position: Position, properties ?: GeoJsonProperties): Element{
     const [lon, lat, ele, time] = position;
-    const wpt = doc.createElement(type);
-    wpt.setAttribute('lat', String(lat));
-    wpt.setAttribute('lon', String(lon));
-    addElement(wpt, 'ele', ele);
-    addElement(wpt, 'time', time);
+    const el = doc.createElement(type);
+    el.setAttribute('lat', String(lat));
+    el.setAttribute('lon', String(lon));
+    addElement(el, 'ele', ele);
+    addElement(el, 'time', time);
     if(properties){
       Object.keys(properties).forEach(key => {
         const value = properties[key];
         const supports = ['name', 'desc', 'link', 'src', 'type'];
         if(typeof value === 'string' && supports.includes(key)){
-          addElement(wpt, key, value);
+          addElement(el, key, value);
         }
       });
     }
-    return wpt;
+    return el;
   }
   
+  /**
+   * Process a GEOJson Feature 
+   * We assume GEO JSON is related and interpret as such
+   */
   function addFeature(gpx: Element, feature: Feature) : void{
     const {geometry, properties} = feature;
     const {type} = geometry;
   
+    // Unsupported
     if(type === 'GeometryCollection'){
       return;
     }
+
+    // Unsupported
+    if(type === 'Polygon'){
+      return;
+    }
   
+    // A Point in interpreted interpreted into
+    // <wpt />
     if(type === 'Point'){
       const {coordinates} = geometry;
       gpx.appendChild(addPt("wpt", coordinates, properties));
     }
   
+    // MultiPoint is interpreted interpreted into multiple
+    // <wpt /><wpt /><wpt />
     if(type === 'MultiPoint'){
       const {coordinates} = geometry;
       coordinates.forEach((coord: Position) => {
@@ -86,6 +135,8 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
       })
     }
   
+    // LineStrings are interpreted into
+    // <trk><trkseg><trkpt /></trkseg></trk>
     if(type === 'LineString'){
       const {coordinates} = geometry;
       const trk = addTrk(properties);
@@ -96,6 +147,8 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
       gpx.appendChild(trk);
     }
   
+    // MultiLineStrings are interpreted into multiple trksegs
+    // <trk><trkseg><trkpt /></trkseg><trkseg><trkpt /></trkseg></trk>
     if(type === 'MultiLineString'){
       const {coordinates} = geometry;
       const trk = addTrk(properties);
@@ -109,6 +162,9 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
     }
   }
 
+  /**
+   * Add Options Meta Data
+   */
   if(options?.metadata){ 
     const meta = options.metadata;
     const metadata = doc.createElement("metadata");
@@ -135,6 +191,7 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
     gpx.appendChild(metadata);
   }
 
+  // Process GeoJSON
   const{type} = geoJson;
   if(type === 'Feature'){
     addFeature(gpx, geoJson);
@@ -145,6 +202,8 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
       addFeature(gpx, feature);
     });
   }
+
+  // Append GPX to DOC
   doc.appendChild(gpx);
   return doc;
 }
