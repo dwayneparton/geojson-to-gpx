@@ -31,7 +31,7 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
   /**
    * Creates an element with content and appends it to the parent
    */
-  function addElement(el: Element, tagName : string,  content: string | number | undefined){
+  function addElement(el: Element, tagName : string, content: string | number | undefined){
     if(content === undefined){
       return;
     }
