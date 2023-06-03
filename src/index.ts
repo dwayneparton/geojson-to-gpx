@@ -23,35 +23,37 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
   const creator = options?.creator || defaultPackageName;
 
   // Set up base GPX Element
+  // This holds all the data that makes a GPX file
   const gpx = doc.createElement("gpx");
   gpx.setAttribute("version", version);
   gpx.setAttribute("creator", creator);
   gpx.setAttribute("xmlns", "http://www.topografix.com/GPX/1/1");
 
   /**
-   * Creates an element with content and appends it to the parent
+   * Creates a new tag with content and appends it to the parent
    */
-  function addElement(el: Element, tagName : string, content: string | number | undefined){
+  function createTagInParentElement(parent: Element, tagName : string, content: string | number | undefined){
     if(content === undefined){
       return;
     }
     const element = doc.createElement(tagName);
     const contentEl = doc.createTextNode(String(content));
     element.appendChild(contentEl);
-    el.appendChild(element);
+    parent.appendChild(element);
   }
   
   /**
+   * Creates a <trk> from GeoJsonProperties
    * Represents a track - an ordered list of points describing a path.
    */
-  function addTrk(properties ?: GeoJsonProperties): Element{
+  function createTrk(properties ?: GeoJsonProperties): Element{
     const el = doc.createElement('trk');
     if(properties){
       Object.keys(properties).forEach(key => {
         const value = properties[key];
         const supports = ['name', 'desc', 'link', 'src', 'type'];
         if(typeof value === 'string' && supports.includes(key)){
-          addElement(el, key, value);
+          createTagInParentElement(el, key, value);
         }
       });
     }
@@ -59,6 +61,7 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
   }
   
   /**
+   * Creates a <trkseg /> from an array of points
    * Takes an position array and created a track segment
    * <trkseg> ...trkpts </trkseg>
    * A Track Segment holds a list of Track Points which are logically connected in order.
@@ -66,10 +69,10 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
    * or the GPS receiver was turned off, 
    * start a new Track Segment for each continuous span of track data
    */
-  function addTrkSeg(coordinates: Position[]): Element{
+  function createTrkSeg(coordinates: Position[]): Element{
     const el = doc.createElement('trkseg');
     coordinates.forEach((point) => {
-      el.appendChild(addPt("trkpt", point));
+      el.appendChild(createPt("trkpt", point));
     })
     return el;
   }
@@ -82,19 +85,19 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
    * </wpt|trkpt>
    * These are compatible elements
    */
-  function addPt(type: "wpt" | "trkpt", position: Position, properties ?: GeoJsonProperties): Element{
+  function createPt(type: "wpt" | "trkpt", position: Position, properties ?: GeoJsonProperties): Element{
     const [lon, lat, ele, time] = position;
     const el = doc.createElement(type);
     el.setAttribute('lat', String(lat));
     el.setAttribute('lon', String(lon));
-    addElement(el, 'ele', ele);
-    addElement(el, 'time', time);
+    createTagInParentElement(el, 'ele', ele);
+    createTagInParentElement(el, 'time', time);
     if(properties){
       Object.keys(properties).forEach(key => {
         const value = properties[key];
         const supports = ['name', 'desc', 'link', 'src', 'type'];
         if(typeof value === 'string' && supports.includes(key)){
-          addElement(el, key, value);
+          createTagInParentElement(el, key, value);
         }
       });
     }
@@ -102,63 +105,55 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
   }
   
   /**
-   * Process a GEOJson Feature 
+   * Interpret a GEOJson Feature 
    * We assume GEO JSON is related and interpret as such
    */
-  function addFeature(gpx: Element, feature: Feature) : void{
+  function interpretFeature(gpx: Element, feature: Feature) : void{
     const {geometry, properties} = feature;
     const {type} = geometry;
+    switch (type) {
+      // Unsupported for now
+      // Eventually could interpret into a line string
+      case 'Polygon':
+        return;
   
-    // Unsupported
-    if(type === 'GeometryCollection'){
-      return;
-    }
+      // A Point in interpreted interpreted into
+      // <wpt />
+      case 'Point':
+        gpx.appendChild(createPt("wpt", geometry.coordinates, properties));
+        return;
 
-    // Unsupported
-    if(type === 'Polygon'){
+      // MultiPoint is interpreted interpreted into multiple
+      // <wpt /><wpt /><wpt />
+      case 'MultiPoint':
+        geometry.coordinates.forEach((coord: Position) => {
+          gpx.appendChild(createPt("wpt", coord, properties));
+        })
       return;
-    }
-  
-    // A Point in interpreted interpreted into
-    // <wpt />
-    if(type === 'Point'){
-      const {coordinates} = geometry;
-      gpx.appendChild(addPt("wpt", coordinates, properties));
-    }
-  
-    // MultiPoint is interpreted interpreted into multiple
-    // <wpt /><wpt /><wpt />
-    if(type === 'MultiPoint'){
-      const {coordinates} = geometry;
-      coordinates.forEach((coord: Position) => {
-        gpx.appendChild(addPt("wpt", coord, properties));
-      })
-    }
-  
-    // LineStrings are interpreted into
-    // <trk><trkseg><trkpt /></trkseg></trk>
-    if(type === 'LineString'){
-      const {coordinates} = geometry;
-      const trk = addTrk(properties);
-      if(type === 'LineString'){
-        const trkseg = addTrkSeg(coordinates);
-        trk.appendChild(trkseg);
-      }
-      gpx.appendChild(trk);
-    }
-  
-    // MultiLineStrings are interpreted into multiple trksegs
-    // <trk><trkseg><trkpt /></trkseg><trkseg><trkpt /></trkseg></trk>
-    if(type === 'MultiLineString'){
-      const {coordinates} = geometry;
-      const trk = addTrk(properties);
-      if(type === 'MultiLineString'){
-        coordinates.forEach((pos: Position[]) =>{
-          const trkseg = addTrkSeg(pos);
+
+      // LineStrings are interpreted into
+      // <trk><trkseg><trkpt /></trkseg></trk>
+      case 'LineString':
+        let lineTrk = createTrk(properties);
+        const trkseg = createTrkSeg(geometry.coordinates);
+        lineTrk.appendChild(trkseg);
+        gpx.appendChild(lineTrk);
+        return;
+
+      // MultiLineStrings are interpreted into multiple trksegs
+      // <trk><trkseg><trkpt /></trkseg><trkseg><trkpt /></trkseg></trk>
+      case 'MultiLineString':
+        const trk = createTrk(properties);
+        geometry.coordinates.forEach((pos: Position[]) =>{
+          const trkseg = createTrkSeg(pos);
           trk.appendChild(trkseg);
         })
-      }
-      gpx.appendChild(trk);
+        gpx.appendChild(trk);
+        return;
+
+      // All others are unsupported
+      default:
+        return;
     }
   }
 
@@ -168,13 +163,13 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
   if(options?.metadata){ 
     const meta = options.metadata;
     const metadata = doc.createElement("metadata");
-    addElement(metadata, 'name', meta?.name);
-    addElement(metadata, 'desc', meta?.desc);
+    createTagInParentElement(metadata, 'name', meta?.name);
+    createTagInParentElement(metadata, 'desc', meta?.desc);
     if(meta?.author){
       const author = doc.createElement("author");
-      addElement(author, 'name', meta?.author?.name);
-      addElement(author, 'email', meta?.author?.email);
-      addElement(author, 'link', meta?.author?.link);
+      createTagInParentElement(author, 'name', meta?.author?.name);
+      createTagInParentElement(author, 'email', meta?.author?.email);
+      createTagInParentElement(author, 'link', meta?.author?.link);
       metadata.appendChild(author);
     }
     if(meta?.copyright){
@@ -182,25 +177,32 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
       if(meta?.copyright?.author){
         copyright.setAttribute('author', meta?.copyright?.author);
       }
-      addElement(copyright, 'year', meta?.copyright?.license);
-      addElement(copyright, 'license', meta?.copyright?.year);
+      createTagInParentElement(copyright, 'year', meta?.copyright?.license);
+      createTagInParentElement(copyright, 'license', meta?.copyright?.year);
       metadata.appendChild(copyright);
     }
-    addElement(metadata, 'time', meta?.time);
-    addElement(metadata, 'keywords', meta?.keywords);
+    createTagInParentElement(metadata, 'time', meta?.time);
+    createTagInParentElement(metadata, 'keywords', meta?.keywords);
     gpx.appendChild(metadata);
   }
 
   // Process GeoJSON
   const{type} = geoJson;
-  if(type === 'Feature'){
-    addFeature(gpx, geoJson);
-  }
-  if(type === 'FeatureCollection'){
-    const {features} = geoJson;
-    features.forEach((feature: Feature) => {
-      addFeature(gpx, feature);
-    });
+  switch (type) {
+
+    case 'Feature':
+      interpretFeature(gpx, geoJson);
+      break;
+
+    case 'FeatureCollection':
+      const {features} = geoJson;
+      features.forEach((feature: Feature) => {
+        interpretFeature(gpx, feature);
+      });
+      break;
+  
+    default:
+      break;
   }
 
   // Append GPX to DOC

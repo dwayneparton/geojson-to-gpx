@@ -1,6 +1,6 @@
 
 import GeoJsonToGpx from "../src/index";
-import { Feature, GeoJSON, Geometry, LineString } from "geojson";
+import { Feature, LineString } from "geojson";
 
 const geojson: Feature<LineString> = { 
   type: "Feature",

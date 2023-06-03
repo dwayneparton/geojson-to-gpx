@@ -24,6 +24,12 @@ test('should have correct trk count', () => {
 });
 
 test('should have correct wpt count', () => {
-  const trk = gpx.querySelectorAll('wpt');
-  expect(trk).toHaveLength(1);
+  const wpt = gpx.querySelectorAll('wpt');
+  expect(wpt).toHaveLength(1);
+});
+
+test('should have correct wpt lat lon', () => {
+  const wpt = gpx.querySelector('wpt');
+  expect(wpt?.getAttribute('lon')).toEqual(String(geojson.geometry.coordinates[0]));
+  expect(wpt?.getAttribute('lat')).toEqual(String(geojson.geometry.coordinates[1]));
 });
