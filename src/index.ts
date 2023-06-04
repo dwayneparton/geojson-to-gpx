@@ -18,7 +18,7 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
   doc.append(instruct);
 
   // Set up default options
-  const defaultPackageVersion = '0.0.19';
+  const defaultPackageVersion = '0.0.20';
   const defaultPackageName = "@dwayneparton/geojson-to-gpx";
   const version = options?.version || defaultPackageVersion;
   const creator = options?.creator || defaultPackageName;
@@ -181,29 +181,29 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
    * Add Options Meta Data
    * @see http://www.topografix.com/GPX/1/1/#type_metadataType
    */
-  if(options?.metadata){ 
+  if(options && typeof options.metadata === 'object'){ 
     const meta = options.metadata;
     const metadata = doc.createElement("metadata");
-    createTagInParentElement(metadata, 'name', meta?.name);
-    createTagInParentElement(metadata, 'desc', meta?.desc);
-    if(meta?.author){
+    createTagInParentElement(metadata, 'name', meta.name);
+    createTagInParentElement(metadata, 'desc', meta.desc);
+    if(typeof meta.author === 'object'){
       const author = doc.createElement("author");
-      createTagInParentElement(author, 'name', meta?.author?.name);
-      createTagInParentElement(author, 'email', meta?.author?.email);
-      createTagInParentElement(author, 'link', meta?.author?.link);
+      createTagInParentElement(author, 'name', meta.author.name);
+      createTagInParentElement(author, 'email', meta.author.email);
+      createTagInParentElement(author, 'link', meta.author.link);
       metadata.appendChild(author);
     }
-    if(meta?.copyright){
+    if(typeof meta.copyright === 'object'){
       const copyright = doc.createElement("copyright");
-      if(meta?.copyright?.author){
-        copyright.setAttribute('author', meta?.copyright?.author);
+      if(meta.copyright.author){
+        copyright.setAttribute('author', meta.copyright.author);
       }
-      createTagInParentElement(copyright, 'year', meta?.copyright?.year);
-      createTagInParentElement(copyright, 'license', meta?.copyright?.license);
+      createTagInParentElement(copyright, 'year', meta.copyright.year);
+      createTagInParentElement(copyright, 'license', meta.copyright.license);
       metadata.appendChild(copyright);
     }
-    createTagInParentElement(metadata, 'time', meta?.time);
-    createTagInParentElement(metadata, 'keywords', meta?.keywords);
+    createTagInParentElement(metadata, 'time', meta.time);
+    createTagInParentElement(metadata, 'keywords', meta.keywords);
     gpx.appendChild(metadata);
   }
 
