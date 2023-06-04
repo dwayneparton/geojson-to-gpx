@@ -65,7 +65,12 @@ test('should have metadata name', () => {
 test('should have metadata author', () => {
   const author = metadataEl?.querySelector('author')
   expect(author).not.toBeNull();
-  expect(author?.innerHTML).toEqual(options.metadata?.author);
+});
+
+test('should have metadata author.name', () => {
+  const author = metadataEl?.querySelector('author')
+  const name = author?.querySelector('name')
+  expect(name?.innerHTML).toEqual(options.metadata?.author?.name);
 });
 
 test('should have metadata copyright', () => {
