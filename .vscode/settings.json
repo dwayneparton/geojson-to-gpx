@@ -1,0 +1,4 @@
+{
+    "eslint.validate": ["typescript"],
+    "eslint.format.enable": true,
+}
