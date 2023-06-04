@@ -18,7 +18,7 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
   doc.append(instruct);
 
   // Set up default options
-  const defaultPackageVersion = '0.0.18';
+  const defaultPackageVersion = '0.0.19';
   const defaultPackageName = "@dwayneparton/geojson-to-gpx";
   const version = options?.version || defaultPackageVersion;
   const creator = options?.creator || defaultPackageName;
