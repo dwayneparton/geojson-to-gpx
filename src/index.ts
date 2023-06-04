@@ -198,8 +198,8 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
       if(meta?.copyright?.author){
         copyright.setAttribute('author', meta?.copyright?.author);
       }
-      createTagInParentElement(copyright, 'year', meta?.copyright?.license);
-      createTagInParentElement(copyright, 'license', meta?.copyright?.year);
+      createTagInParentElement(copyright, 'year', meta?.copyright?.year);
+      createTagInParentElement(copyright, 'license', meta?.copyright?.license);
       metadata.appendChild(copyright);
     }
     createTagInParentElement(metadata, 'time', meta?.time);
