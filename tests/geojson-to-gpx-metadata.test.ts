@@ -9,7 +9,14 @@ const options: Options = {
     name: 'A grand adventure',
     author: {
       name: 'Dwayne Parton'
-    }
+    },
+    copyright: {
+      author: 'Dwayne Parton',
+      year: '2023',
+      license: 'MIT'
+    },
+    time: '0',
+    keywords: 'this,is,a,test'
   }
 }
 
@@ -59,3 +66,42 @@ test('should have metadata author', () => {
   const author = metadataEl?.querySelector('author')
   expect(author).not.toBeNull();
 });
+
+test('should have metadata author.name', () => {
+  const author = metadataEl?.querySelector('author')
+  const name = author?.querySelector('name')
+  expect(name?.innerHTML).toEqual(options.metadata?.author?.name);
+});
+
+test('should have metadata copyright', () => {
+  const copyright = metadataEl?.querySelector('copyright')
+  expect(copyright).not.toBeNull();
+  expect(copyright?.getAttribute('author')).toEqual(options.metadata?.copyright?.author);
+});
+
+test('should have metadata copyright.license', () => {
+  const copyright = metadataEl?.querySelector('copyright')
+  const license = copyright?.querySelector('license')
+  expect(license).not.toBeNull();
+  expect(license?.innerHTML).toEqual(options.metadata?.copyright?.license);
+});
+
+test('should have metadata copyright.year', () => {
+  const copyright = metadataEl?.querySelector('copyright')
+  const year = copyright?.querySelector('year')
+  expect(year).not.toBeNull();
+  expect(year?.innerHTML).toEqual(options.metadata?.copyright?.year);
+});
+
+test('should have metadata time', () => {
+  const time = metadataEl?.querySelector('time')
+  expect(time).not.toBeNull();
+  expect(time?.innerHTML).toEqual(options.metadata?.time);
+});
+
+test('should have metadata keywords', () => {
+  const keywords = metadataEl?.querySelector('keywords')
+  expect(keywords).not.toBeNull();
+  expect(keywords?.innerHTML).toEqual(options.metadata?.keywords);
+});
+

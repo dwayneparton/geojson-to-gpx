@@ -18,7 +18,7 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
   doc.append(instruct);
 
   // Set up default options
-  const defaultPackageVersion = '0.0.17';
+  const defaultPackageVersion = '0.0.18';
   const defaultPackageName = "@dwayneparton/geojson-to-gpx";
   const version = options?.version || defaultPackageVersion;
   const creator = options?.creator || defaultPackageName;
@@ -198,8 +198,8 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
       if(meta?.copyright?.author){
         copyright.setAttribute('author', meta?.copyright?.author);
       }
-      createTagInParentElement(copyright, 'year', meta?.copyright?.license);
-      createTagInParentElement(copyright, 'license', meta?.copyright?.year);
+      createTagInParentElement(copyright, 'year', meta?.copyright?.year);
+      createTagInParentElement(copyright, 'license', meta?.copyright?.license);
       metadata.appendChild(copyright);
     }
     createTagInParentElement(metadata, 'time', meta?.time);
