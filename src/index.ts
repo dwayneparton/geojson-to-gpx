@@ -12,7 +12,7 @@ import {
  * @returns XMLDocument
  * @see http://www.topografix.com/GPX/1/1/
  */
-export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, options ?: Options): XMLDocument {
+export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, options?: Options): XMLDocument {
   // Create root XMLDocument
   const doc = document.implementation.createDocument('http://www.topografix.com/GPX/1/1', '');
   const instruct = doc.createProcessingInstruction('xml', 'version="1.0" encoding="UTF-8"');
@@ -34,7 +34,7 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
   /**
    * Creates a new tag with content and appends it to the parent
    */
-  function createTagInParentElement(parent: Element, tagName : string, content: string | number | undefined) {
+  function createTagInParentElement(parent: Element, tagName: string, content: string | number | undefined) {
     if (content === undefined) {
       return;
     }
@@ -58,7 +58,7 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
    * ```
    * @see http://www.topografix.com/GPX/1/1/#type_trkType
    */
-  function createTrk(properties ?: GeoJsonProperties): Element {
+  function createTrk(properties?: GeoJsonProperties): Element {
     const el = doc.createElement('trk');
     if (properties) {
       Object.keys(properties).forEach((key) => {
@@ -85,7 +85,7 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
    * @see http://www.topografix.com/GPX/1/1/#type_wptType for wpt
    * @see http://www.topografix.com/GPX/1/1/#type_ptType for trkpt
    */
-  function createPt(type: 'wpt' | 'trkpt', position: Position, properties ?: GeoJsonProperties): Element {
+  function createPt(type: 'wpt' | 'trkpt', position: Position, properties?: GeoJsonProperties): Element {
     const [lon, lat, ele, time] = position;
     const el = doc.createElement(type);
     el.setAttribute('lat', String(lat));
