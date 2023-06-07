@@ -1,6 +1,6 @@
 {
     "name": "@dwayneparton/geojson-to-gpx",
-    "version": "0.0.21",
+    "version": "0.0.22",
     "description": "Converts GeoJson to GPX",
     "main": "dist/index.js",
     "module": "dist/index.js",
@@ -15,7 +15,8 @@
         "start": "npx tsc -w",
         "build": "npx tsc",
         "build:min": "webpack --config ./webpack.config.ts --mode=production --env=production --progress",
-        "test": "jest"
+        "test": "jest",
+        "lint": "npx eslint ./src"
     },
     "keywords": [
         "geojson",
@@ -41,8 +42,12 @@
         "@babel/preset-typescript": "^7.21.5",
         "@types/geojson": "^7946.0.10",
         "@types/jest": "^29.5.2",
+        "@typescript-eslint/eslint-plugin": "^5.59.9",
+        "@typescript-eslint/parser": "^5.59.9",
         "babel-loader": "^9.1.2",
         "browserslist": "^4.21.7",
+        "eslint": "^8.42.0",
+        "eslint-config-airbnb": "^19.0.4",
         "jest": "^29.5.0",
         "jest-environment-jsdom": "^29.5.0",
         "ts-jest": "^29.1.0",
