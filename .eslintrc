@@ -1,89 +1,33 @@
 {
-	"root": true,
-	"extends": "airbnb",
-	"parser": "@babel/eslint-parser",
-	"parserOptions": {
-		"babelOptions": {
-			"rootMode": "root"
-		}
-	},
-	"plugins": ["jam3"],
-	"env": {
-		"browser": true
-	},
-	"globals": {},
-	"ignorePatterns": ["node_modules", "./www/**/*{js,ts}"],
-	"rules": {
-		"comma-dangle": 0,
-		"no-new": 0,
-		"no-plusplus": 0,
-		"react/prop-types": 0,
-		"no-console": [1, { "allow": ["warn", "error"] }],
-        "react/no-unknown-property": 0,
-		"react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx", ".ts", ".tsx"] }],
-		"react/jsx-props-no-spreading": [
-			0,
-			{
-				"html": "enforce",
-				"custom": "enforce",
-				"explicitSpread": "enforce"
-			}
-		],
-		"react/jsx-pascal-case": 0,
-		"react/require-default-props": 0,
-		"no-setter-return": 1,
-		"camelcase": 0,
-		"max-len": 0,
-		"no-underscore-dangle": 0,
-		"no-param-reassign": [2, { "props": false }],
-		"no-shadow": [1],
-		"react/react-in-jsx-scope": 0,
-		"react/no-array-index-key": [0],
-		"lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }],
-		"import/no-unresolved": [
-			2,
-			{
-				"ignore": ["^@wordpress/[a-zA-Z0-9]+"]
-			}
-		],
-		"import/no-extraneous-dependencies": [
-			"error",
-			{
-				"devDependencies": [
-					"**/postcss.config.js",
-					"**/*.test.js",
-					"**/*.spec.js",
-					"**/webpack.config.js",
-					"**/webpack.config.ts"
-				]
-			}
-		],
-		"react/no-danger": [0],
-		"jam3/no-sanitizer-with-danger": [2, { "wrapperName": ["sanitize"] }]
-	},
-	"settings": {
-		"import/resolver": {
-			"node": {
-				"extensions": [".js", ".jsx", ".ts", ".tsx"]
-			}
-		}
-	},
-	"overrides": [
-		{
-			"files": ["*.{ts,tsx}"],
-			"parser": "@typescript-eslint/parser",
-			"plugins": ["@typescript-eslint"],
-			"extends": ["plugin:@typescript-eslint/recommended"],
-			"rules": {
-				"import/extensions": [
-					"error",
-					"ignorePackages",
-					{
-						"ts": "never",
-						"tsx": "never"
-					}
-				]
-			}
-		}
-	]
+    "root": true,
+    "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "babelOptions": {
+            "rootMode": "root"
+        }
+    },
+    "plugins": ["import", "@typescript-eslint"],
+    "env": {
+        "browser": true
+    },
+    "globals": {},
+    "ignorePatterns": ["node_modules"],
+    "rules": {
+        "max-len": 0,
+        "import/extensions": [
+            "error",
+            "ignorePackages",
+            {
+                "ts": "never"
+            }
+        ]
+    },
+    "settings": {
+        "import/resolver": {
+            "node": {
+                "extensions": [".ts"]
+            }
+        }
+    }
 }
