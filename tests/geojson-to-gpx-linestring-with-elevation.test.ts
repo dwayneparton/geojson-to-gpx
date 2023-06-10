@@ -46,5 +46,5 @@ test('should have correct lat lons ele and time', () => {
     expect(ele?.innerHTML).toEqual(String(geojson.geometry.coordinates[key][2]));
     const time = trkpt.querySelector('time');
     expect(time?.innerHTML).toEqual(String(geojson.geometry.coordinates[key][3]));
-  })
+  });
 });

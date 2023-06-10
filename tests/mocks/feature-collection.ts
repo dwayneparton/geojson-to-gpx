@@ -19982,6 +19982,6 @@ const geojson: FeatureCollection = {
             },
         }
     ]
-}
+};
 
 export default geojson;

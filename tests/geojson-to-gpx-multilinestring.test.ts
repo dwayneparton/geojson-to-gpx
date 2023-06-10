@@ -41,6 +41,6 @@ test('should have correct trkseg count', () => {
 
 test('should have correct trkpt count', () => {
   const trkpt = gpx.querySelectorAll('trkpt');
-  const length = geojson.geometry.coordinates.reduce((prev, curr) => prev + curr.length, 0)
+  const length = geojson.geometry.coordinates.reduce((prev, curr) => prev + curr.length, 0);
   expect(trkpt).toHaveLength(length);
 });

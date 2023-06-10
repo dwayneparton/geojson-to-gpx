@@ -49,6 +49,9 @@ const options = {
     name: 'A grand adventure',
     author: {
       name: 'Dwayne Parton'
+      link: {
+        href: 'https://www.dwayneparton.com'
+      }
     }
   }
 }
