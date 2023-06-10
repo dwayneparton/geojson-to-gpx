@@ -71,6 +71,11 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
   gpx.setAttribute('creator', creator);
   gpx.setAttribute('xmlns', 'http://www.topografix.com/GPX/1/1');
 
+  // Order matters so new wpt and trk should be added to here
+  // and appended in order at end
+  const wpts: Element[] = [];
+  const trks: Element[] = [];
+
   /**
    * Creates a new tag with content and appends it to the parent
    */
@@ -203,14 +208,14 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
 
       // A Point in interpreted interpreted into a wpt
       case 'Point': {
-        gpx.appendChild(createPt('wpt', geometry.coordinates, properties));
+        wpts.push(createPt('wpt', geometry.coordinates, properties));
         break;
       }
 
       // MultiPoint is interpreted interpreted into multiple wpts
       case 'MultiPoint': {
         geometry.coordinates.forEach((coord: Position) => {
-          gpx.appendChild(createPt('wpt', coord, properties));
+          wpts.push(createPt('wpt', coord, properties));
         });
         break;
       }
@@ -220,7 +225,7 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
         const lineTrk = createTrk(properties);
         const trkseg = createTrkSeg(geometry.coordinates);
         lineTrk.appendChild(trkseg);
-        gpx.appendChild(lineTrk);
+        trks.push(lineTrk);
         break;
       }
 
@@ -231,7 +236,7 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
           const trkseg = createTrkSeg(pos);
           trk.appendChild(trkseg);
         });
-        gpx.appendChild(trk);
+        trks.push(trk);
         break;
       }
 
@@ -296,7 +301,13 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
       break;
   }
 
+  // Order matters for valid GPX
+  // wpt comes before trks
+  gpx.append(...wpts);
+  gpx.append(...trks);
+
   // Append GPX to DOC
   doc.appendChild(gpx);
+
   return doc;
 }
