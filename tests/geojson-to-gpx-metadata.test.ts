@@ -57,7 +57,7 @@ test('should have correct creator attribute', () => {
 });
 
 test('should have correct version attribute', () => {
-  expect(gpxEl?.getAttribute('version')).toEqual(options.version);
+  expect(gpxEl?.getAttribute('version')).toEqual('1.1');
 });
 
 test('should have metadata', () => {
