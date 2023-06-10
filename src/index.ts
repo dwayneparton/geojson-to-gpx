@@ -124,12 +124,12 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
    */
   function createTrk(properties?: GeoJsonProperties): Element {
     const el = doc.createElement('trk');
-    if (properties) {
-      Object.keys(properties).forEach((key) => {
+    if (properties && typeof properties === 'object') {
+      const supports = ['name', 'desc', 'src', 'type'];
+      supports.forEach((key) => {
         const value = properties[key];
-        const supports = ['name', 'desc', 'src', 'type'];
-        if (typeof value === 'string' && supports.includes(key)) {
-            createTagInParentElement(el, key, value);
+        if (value && typeof value === 'string' && supports.includes(key)) {
+          createTagInParentElement(el, key, value);
         }
       });
     }
@@ -156,11 +156,11 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
     el.setAttribute('lon', String(lon));
     createTagInParentElement(el, 'ele', ele);
     createTagInParentElement(el, 'time', time);
-    if (properties) {
-      Object.keys(properties).forEach((key) => {
+    if (properties && typeof properties === 'object') {
+      const supports = ['name', 'desc', 'src', 'type'];
+      supports.forEach((key) => {
         const value = properties[key];
-        const supports = ['name', 'desc', 'src', 'type'];
-        if (typeof value === 'string' && supports.includes(key)) {
+        if (value && typeof value === 'string' && supports.includes(key)) {
           createTagInParentElement(el, key, value);
         }
       });

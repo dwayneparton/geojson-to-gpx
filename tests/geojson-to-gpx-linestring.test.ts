@@ -5,6 +5,9 @@ import { Feature, LineString } from "geojson";
 const geojson: Feature<LineString> = { 
   type: "Feature",
   properties : {
+    desc : 'This is a description',
+    src : 'Test',
+    type : 'Race',
     name : 'Slow journey from null island'
   },
   geometry: {
@@ -27,6 +30,24 @@ test('should not be null', () => {
 test('should have correct trk count', () => {
   const trk = gpx.querySelectorAll('trk');
   expect(trk).toHaveLength(1);
+});
+
+test('should have correct trk properties and be in correct order', () => {
+  const trk = gpx.querySelector('trk');
+  const name = trk?.querySelector('name');
+  expect(name?.innerHTML).toBe(geojson?.properties?.name);
+  // desc should be after name
+  const desc = trk?.querySelector('desc');
+  expect(name?.nextSibling).toBe(desc);
+  expect(desc?.innerHTML).toBe(geojson?.properties?.desc);
+  // src should be after desc
+  const src = trk?.querySelector('src');
+  expect(desc?.nextSibling).toBe(src);
+  expect(src?.innerHTML).toBe(geojson?.properties?.src);
+  // Type should be after src
+  const type = trk?.querySelector('type');
+  expect(src?.nextSibling).toBe(type);
+  expect(type?.innerHTML).toBe(geojson?.properties?.type);
 });
 
 test('should have correct trkpt count', () => {
