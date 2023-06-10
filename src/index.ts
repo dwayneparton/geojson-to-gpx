@@ -90,23 +90,32 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
   }
 
   /**
+   * Takes supported properties, creates node, and appends to parent.
+   */
+  function addSupportedPropertiesFromObject(el: Element, supports: string[], properties?: GeoJsonProperties){
+    if (properties && typeof properties === 'object') {
+      supports.forEach((key) => {
+        const value = properties[key];
+        if (value && typeof value === 'string' && supports.includes(key)) {
+          createTagInParentElement(el, key, value);
+        }
+      });
+    }
+  }
+
+  /**
    * Creates a link element
    * @see http://www.topografix.com/GPX/1/1/#type_linkType
    */
   function createLinkInParentElement(parent: Element, props: Link){
-    const {href, text, type} = props;
+    const {href} = props;
     if(!href){
       return;
     }
-    const element = doc.createElement('link');
-    element.setAttribute('href', href);
-    if(text){
-      createTagInParentElement(element, 'text', text);
-    }
-    if(type){
-      createTagInParentElement(element, 'type', type);
-    }
-    parent.appendChild(element);
+    const el = doc.createElement('link');
+    el.setAttribute('href', href);
+    addSupportedPropertiesFromObject(el, ['text','type'], props);
+    parent.appendChild(el);
   }
 
   /**
@@ -124,15 +133,8 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
    */
   function createTrk(properties?: GeoJsonProperties): Element {
     const el = doc.createElement('trk');
-    if (properties && typeof properties === 'object') {
-      const supports = ['name', 'desc', 'src', 'type'];
-      supports.forEach((key) => {
-        const value = properties[key];
-        if (value && typeof value === 'string' && supports.includes(key)) {
-          createTagInParentElement(el, key, value);
-        }
-      });
-    }
+    const supports = ['name', 'desc', 'src', 'type'];
+    addSupportedPropertiesFromObject(el, supports, properties);
     return el;
   }
 
@@ -156,15 +158,8 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
     el.setAttribute('lon', String(lon));
     createTagInParentElement(el, 'ele', ele);
     createTagInParentElement(el, 'time', time);
-    if (properties && typeof properties === 'object') {
-      const supports = ['name', 'desc', 'src', 'type'];
-      supports.forEach((key) => {
-        const value = properties[key];
-        if (value && typeof value === 'string' && supports.includes(key)) {
-          createTagInParentElement(el, key, value);
-        }
-      });
-    }
+    const supports = ['name', 'desc', 'src', 'type'];
+    addSupportedPropertiesFromObject(el, supports, properties);
     return el;
   }
 
