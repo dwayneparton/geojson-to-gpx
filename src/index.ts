@@ -16,7 +16,7 @@ declare interface Copyright {
 }
 
 declare interface Link {
-  href?: string,
+  href: string,
   text?: string,
   type?: string
 }
@@ -24,7 +24,7 @@ declare interface Link {
 declare interface Person {
   name?: string,
   email?: string,
-  link?: string
+  link?: Link
 }
 
 declare interface MetaData {
@@ -61,7 +61,7 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
   doc.append(instruct);
 
   // Set up default options
-  const defaultPackageVersion = '0.0.22';
+  const defaultPackageVersion = '0.0.23';
   const defaultPackageName = '@dwayneparton/geojson-to-gpx';
   const version = options?.version || defaultPackageVersion;
   const creator = options?.creator || defaultPackageName;
@@ -87,13 +87,32 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
   }
 
   /**
+   * Creates a link element
+   * @see http://www.topografix.com/GPX/1/1/#type_linkType
+   */
+  function createLinkInParentElement(parent: Element, props: Link){
+    const {href, text, type} = props;
+    if(!href){
+      return;
+    }
+    const element = doc.createElement('link');
+    element.setAttribute('href', href);
+    if(text){
+      createTagInParentElement(element, 'text', text);
+    }
+    if(type){
+      createTagInParentElement(element, 'type', type);
+    }
+    parent.appendChild(element);
+  }
+
+  /**
    * Creates a <trk> from GeoJsonProperties
    * Represents a track - an ordered list of points describing a path.
    * ```xml
    * <trk>
    *     <name>The Rut</name>
    *     <desc>A race in big sky montana</desc>
-   *     <link>https://runtherut.com/50k-race-details/</link>
    *     <src>onX Maps</src>
    *     <type>Race</type>
    * </trk>
@@ -105,9 +124,9 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
     if (properties) {
       Object.keys(properties).forEach((key) => {
         const value = properties[key];
-        const supports = ['name', 'desc', 'link', 'src', 'type'];
+        const supports = ['name', 'desc', 'src', 'type'];
         if (typeof value === 'string' && supports.includes(key)) {
-          createTagInParentElement(el, key, value);
+            createTagInParentElement(el, key, value);
         }
       });
     }
@@ -137,7 +156,7 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
     if (properties) {
       Object.keys(properties).forEach((key) => {
         const value = properties[key];
-        const supports = ['name', 'desc', 'link', 'src', 'type'];
+        const supports = ['name', 'desc', 'src', 'type'];
         if (typeof value === 'string' && supports.includes(key)) {
           createTagInParentElement(el, key, value);
         }
@@ -233,11 +252,16 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
     const metadata = doc.createElement('metadata');
     createTagInParentElement(metadata, 'name', meta.name);
     createTagInParentElement(metadata, 'desc', meta.desc);
+    if (typeof meta.link === 'object') {
+      createLinkInParentElement(metadata, meta.link);
+    }
     if (typeof meta.author === 'object') {
       const author = doc.createElement('author');
       createTagInParentElement(author, 'name', meta.author.name);
       createTagInParentElement(author, 'email', meta.author.email);
-      createTagInParentElement(author, 'link', meta.author.link);
+      if (typeof meta.author.link === 'object') {
+        createLinkInParentElement(author, meta.author.link);
+      }
       metadata.appendChild(author);
     }
     if (typeof meta.copyright === 'object') {

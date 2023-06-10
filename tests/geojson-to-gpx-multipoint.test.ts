@@ -39,5 +39,5 @@ test('should have correct lat lons', () => {
   wpts.forEach((wpt, key) => {
     expect(wpt.getAttribute('lon')).toEqual(String(geojson.geometry.coordinates[key][0]));
     expect(wpt.getAttribute('lat')).toEqual(String(geojson.geometry.coordinates[key][1]));
-  })
+  });
 });

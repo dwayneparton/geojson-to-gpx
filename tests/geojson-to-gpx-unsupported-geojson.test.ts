@@ -13,7 +13,7 @@ const geojson = {
   },
 };
 
-// @ts-expect-error
+// @ts-expect-error - testing corruption
 const gpx = GeoJsonToGpx(geojson);
 
 test('should not be null', () => {

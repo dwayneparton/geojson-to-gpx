@@ -42,5 +42,5 @@ test('should have correct lat lons', () => {
   trkpts.forEach((trkpt, key) => {
     expect(trkpt.getAttribute('lon')).toEqual(String(geojson.geometry.coordinates[key][0]));
     expect(trkpt.getAttribute('lat')).toEqual(String(geojson.geometry.coordinates[key][1]));
-  })
+  });
 });
