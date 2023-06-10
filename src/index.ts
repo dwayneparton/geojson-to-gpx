@@ -61,15 +61,13 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
   doc.append(instruct);
 
   // Set up default options
-  const defaultPackageVersion = '0.0.23';
   const defaultPackageName = '@dwayneparton/geojson-to-gpx';
-  const version = options?.version || defaultPackageVersion;
   const creator = options?.creator || defaultPackageName;
 
   // Set up base GPX Element
   // This holds all the data that makes a GPX file
   const gpx = doc.createElement('gpx');
-  gpx.setAttribute('version', version);
+  gpx.setAttribute('version', '1.1');
   gpx.setAttribute('creator', creator);
   gpx.setAttribute('xmlns', 'http://www.topografix.com/GPX/1/1');
 
@@ -252,9 +250,6 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
     const metadata = doc.createElement('metadata');
     createTagInParentElement(metadata, 'name', meta.name);
     createTagInParentElement(metadata, 'desc', meta.desc);
-    if (typeof meta.link === 'object') {
-      createLinkInParentElement(metadata, meta.link);
-    }
     if (typeof meta.author === 'object') {
       const author = doc.createElement('author');
       createTagInParentElement(author, 'name', meta.author.name);
@@ -272,6 +267,9 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
       createTagInParentElement(copyright, 'year', meta.copyright.year);
       createTagInParentElement(copyright, 'license', meta.copyright.license);
       metadata.appendChild(copyright);
+    }
+    if (typeof meta.link === 'object') {
+      createLinkInParentElement(metadata, meta.link);
     }
     createTagInParentElement(metadata, 'time', meta.time);
     createTagInParentElement(metadata, 'keywords', meta.keywords);
