@@ -1,5 +1,5 @@
 
-import GeoJsonToGpx from "../src/index";
+import GeoJsonToGpx, {Options} from "../src/index";
 import { Feature, LineString } from "geojson";
 
 const options: Options = {

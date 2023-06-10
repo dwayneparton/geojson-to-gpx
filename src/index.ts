@@ -2,6 +2,48 @@ import {
   Feature, FeatureCollection, GeoJsonProperties, Position,
 } from 'geojson';
 
+declare interface Bounds {
+  minlat: string,
+  minlon: string,
+  maxlat: string,
+  maxlon: string
+}
+
+declare interface Copyright {
+  author?: string,
+  year?: string,
+  license?: string
+}
+
+declare interface Link {
+  href?: string,
+  text?: string,
+  type?: string
+}
+
+declare interface Person {
+  name?: string,
+  email?: string,
+  link?: string
+}
+
+declare interface MetaData {
+  name?: string,
+  desc?: string,
+  author?: Person,
+  copyright?: Copyright,
+  link?: Link,
+  time?: string,
+  keywords?: string,
+  bounds?: Bounds,
+}
+
+export declare interface Options{
+  creator ?: string,
+  version ?: string,
+  metadata ?: MetaData,
+}
+
 /**
  * Interpreting GeoJSON into GPX is lossy
  * It can not be interpreted back into the exact same GeoJSON

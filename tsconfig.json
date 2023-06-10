@@ -106,8 +106,9 @@
     }
   },
   "exclude": [
-    "tests/**/*",
-    "dist/**/*",
+    "node_modules",
+    "tests",
+    "dist",
     "webpack.config.ts"
   ]
 }
