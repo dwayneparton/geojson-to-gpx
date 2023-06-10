@@ -48,7 +48,7 @@ const options = {
   metadata: {
     name: 'A grand adventure',
     author: {
-      name: 'Dwayne Parton'
+      name: 'Dwayne Parton',
       link: {
         href: 'https://www.dwayneparton.com'
       }
