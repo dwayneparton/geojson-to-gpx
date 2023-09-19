@@ -49,7 +49,7 @@ const gpxEl = gpx.querySelector('gpx');
 const metadataEl = gpx.querySelector('metadata');
 
 test('should have correct xmlns attribute', () => {
-  expect(gpxEl?.getAttribute('xmlns')).toEqual('http://www.topografix.com/GPX/1/1');
+  expect(gpx.lookupNamespaceURI('')).toEqual('http://www.topografix.com/GPX/1/1');
 });
 
 test('should have correct creator attribute', () => {

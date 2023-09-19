@@ -64,12 +64,15 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
   const defaultPackageName = '@dwayneparton/geojson-to-gpx';
   const creator = options?.creator || defaultPackageName;
 
+  const createElementWithNS = (tagName: string): Element => {
+    return doc.createElementNS('http://www.topografix.com/GPX/1/1', tagName);
+  };
+
   // Set up base GPX Element
   // This holds all the data that makes a GPX file
-  const gpx = doc.createElement('gpx');
+  const gpx = createElementWithNS('gpx');
   gpx.setAttribute('version', '1.1');
   gpx.setAttribute('creator', creator);
-  gpx.setAttribute('xmlns', 'http://www.topografix.com/GPX/1/1');
 
   // Order matters so new wpt and trk should be added to here
   // and appended in order at end
@@ -83,7 +86,7 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
     if (content === undefined) {
       return;
     }
-    const element = doc.createElement(tagName);
+    const element = createElementWithNS(tagName);
     const contentEl = doc.createTextNode(String(content));
     element.appendChild(contentEl);
     parent.appendChild(element);
@@ -112,7 +115,7 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
     if(!href){
       return;
     }
-    const el = doc.createElement('link');
+    const el = createElementWithNS('link');
     el.setAttribute('href', href);
     addSupportedPropertiesFromObject(el, ['text','type'], props);
     parent.appendChild(el);
@@ -132,7 +135,7 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
    * @see http://www.topografix.com/GPX/1/1/#type_trkType
    */
   function createTrk(properties?: GeoJsonProperties): Element {
-    const el = doc.createElement('trk');
+    const el = createElementWithNS('trk');
     const supports = ['name', 'desc', 'src', 'type'];
     addSupportedPropertiesFromObject(el, supports, properties);
     return el;
@@ -153,7 +156,7 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
    */
   function createPt(type: 'wpt' | 'trkpt', position: Position, properties?: GeoJsonProperties): Element {
     const [lon, lat, ele, time] = position;
-    const el = doc.createElement(type);
+    const el = createElementWithNS(type);
     el.setAttribute('lat', String(lat));
     el.setAttribute('lon', String(lon));
     createTagInParentElement(el, 'ele', ele);
@@ -181,7 +184,7 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
    * @see http://www.topografix.com/GPX/1/1/#type_trksegType
    */
   function createTrkSeg(coordinates: Position[]): Element {
-    const el = doc.createElement('trkseg');
+    const el = createElementWithNS('trkseg');
     coordinates.forEach((point) => {
       el.appendChild(createPt('trkpt', point));
     });
@@ -247,11 +250,11 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
    */
   if (options && typeof options.metadata === 'object') {
     const meta = options.metadata;
-    const metadata = doc.createElement('metadata');
+    const metadata = createElementWithNS('metadata');
     createTagInParentElement(metadata, 'name', meta.name);
     createTagInParentElement(metadata, 'desc', meta.desc);
     if (typeof meta.author === 'object') {
-      const author = doc.createElement('author');
+      const author = createElementWithNS('author');
       createTagInParentElement(author, 'name', meta.author.name);
       createTagInParentElement(author, 'email', meta.author.email);
       if (typeof meta.author.link === 'object') {
@@ -260,7 +263,7 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
       metadata.appendChild(author);
     }
     if (typeof meta.copyright === 'object') {
-      const copyright = doc.createElement('copyright');
+      const copyright = createElementWithNS('copyright');
       if (meta.copyright.author) {
         copyright.setAttribute('author', meta.copyright.author);
       }

@@ -1,6 +1,5 @@
 
 import GeoJsonToGpx from "../src/index";
-import { Feature, Geometry, GeometryCollection } from "geojson";
 
 const geojson = { 
   type: "Unsupported",
