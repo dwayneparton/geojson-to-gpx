@@ -58,7 +58,7 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
   // Create root XMLDocument
   const doc = document.implementation.createDocument('http://www.topografix.com/GPX/1/1', '');
   const instruct = doc.createProcessingInstruction('xml', 'version="1.0" encoding="UTF-8"');
-  doc.append(instruct);
+  doc.appendChild(instruct);
 
   // Set up default options
   const defaultPackageName = '@dwayneparton/geojson-to-gpx';
@@ -301,8 +301,8 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
 
   // Order matters for valid GPX
   // wpt comes before trks
-  gpx.append(...wpts);
-  gpx.append(...trks);
+  wpts.forEach((wpt) => gpx.appendChild(wpt));
+  trks.forEach((trk) => gpx.appendChild(trk));
 
   // Append GPX to DOC
   doc.appendChild(gpx);
