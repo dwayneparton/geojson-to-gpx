@@ -1,6 +1,7 @@
 /**
  * @jest-environment node
  */
+import { expect, test, beforeAll } from "vitest";
 
 import { DOMImplementation, XMLSerializer, DOMParser } from '@xmldom/xmldom';
 import geojson from "./mocks/feature-collection";

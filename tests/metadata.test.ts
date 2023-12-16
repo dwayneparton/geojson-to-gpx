@@ -1,3 +1,4 @@
+import { expect, test } from "vitest";
 
 import GeoJsonToGpx, {Options} from "../src/index";
 import { Feature, LineString } from "geojson";

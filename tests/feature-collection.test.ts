@@ -1,3 +1,4 @@
+import { expect, test } from "vitest";
 
 import GeoJsonToGpx from "../src/index";
 import geojson from "./mocks/feature-collection";
