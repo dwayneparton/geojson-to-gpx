@@ -1,6 +1,6 @@
 {
     "name": "@dwayneparton/geojson-to-gpx",
-    "version": "0.0.30",
+    "version": "0.1.0",
     "description": "Converts GeoJson to GPX",
     "type": "module",
     "main": "dist/index.js",
