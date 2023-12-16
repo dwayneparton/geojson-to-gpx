@@ -109,6 +109,7 @@
     "node_modules",
     "tests",
     "dist",
+    "vitest.config.ts",
     "webpack.config.ts"
   ]
 }
