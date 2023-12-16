@@ -24,9 +24,7 @@ jobs:
         with:
           node-version: '16.x'
           registry-url: 'https://registry.npmjs.org'
-        run: npm ci
-      - run: npm run build
-      - run: npm publish
+        run: npm ci && npm run build && npm publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN  }}
