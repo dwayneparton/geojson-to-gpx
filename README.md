@@ -4,6 +4,15 @@
 
 Designed to be a browser library. Will interpret a geojson object into a gpx XMLDocument. From there you can convert it to a string for download or post process the document.
 
+Can be used with Node though by doing something like:
+
+```js
+  import { DOMImplementation } from '@xmldom/xmldom';
+  import GeoJsonToGpx from "@dwayneparton/geojson-to-gpx"
+  global.document = {implementation: new DOMImplementation()};
+  const gpx = GeoJsonToGpx(geojson, options);
+```
+
 ## Contributions
 
 Contributions welcome.
