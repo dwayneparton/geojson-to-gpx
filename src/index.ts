@@ -253,11 +253,11 @@ export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, optio
     const metadata = createElementWithNS('metadata');
     createTagInParentElement(metadata, 'name', meta.name);
     createTagInParentElement(metadata, 'desc', meta.desc);
-    if (typeof meta.author === 'object') {
+    if (meta.author && typeof meta.author === 'object') {
       const author = createElementWithNS('author');
       createTagInParentElement(author, 'name', meta.author.name);
       createTagInParentElement(author, 'email', meta.author.email);
-      if (typeof meta.author.link === 'object') {
+      if (meta.author.link && typeof meta.author.link === 'object') {
         createLinkInParentElement(author, meta.author.link);
       }
       metadata.appendChild(author);

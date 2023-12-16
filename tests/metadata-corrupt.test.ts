@@ -16,7 +16,7 @@ const options = {
         type: 'Web Page',
       }
     },
-    copyright: 'Dwayne Parton',
+    copyright: {},
     time: 1,
     keywords: 'this,is,a,test'
   }
@@ -41,6 +41,34 @@ const geojson: Feature<LineString> = {
 // @ts-expect-error - testing corruption
 const gpx = GeoJsonToGpx(geojson, options);
 const metadataEl = gpx.querySelector('metadata');
+
+test('cover author when not object', () => {
+  const opts = {
+    metadata: {
+      author: 'Not an object',
+    }
+  };
+  // @ts-expect-error - testing corruption
+  const gpx = GeoJsonToGpx(geojson, opts);
+  const metadataEl = gpx.querySelector('metadata');
+  const author = metadataEl?.querySelector('author');
+  expect(author).toBe(null);
+});
+
+test('cover link when not object', () => {
+  const opts = {
+    metadata: {
+      author: {
+        link: 'test'
+      },
+    }
+  };
+  // @ts-expect-error - testing corruption
+  const gpx = GeoJsonToGpx(geojson, opts);
+  const metadataEl = gpx.querySelector('metadata');
+  const link = metadataEl?.querySelector('link');
+  expect(link).toBe(null);
+});
 
 test('should not have metadata link when corrupt', () => {
   const link = metadataEl?.querySelector('link');
