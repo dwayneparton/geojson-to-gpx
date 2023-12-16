@@ -21,12 +21,7 @@ jobs:
 
       - name: Publish
         if: steps.changesets.outputs.hasChangesets == 'false'
-        with:
-          node-version: '16.x'
-          registry-url: 'https://registry.npmjs.org'
         run: npm ci && npm run build && npm publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN  }}
-
-      
