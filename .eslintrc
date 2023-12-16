@@ -2,11 +2,6 @@
     "root": true,
     "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
     "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-        "babelOptions": {
-            "rootMode": "root"
-        }
-    },
     "plugins": ["import", "@typescript-eslint"],
     "env": {
         "browser": true

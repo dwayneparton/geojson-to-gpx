@@ -1,7 +1,0 @@
-{
-    "presets": ["@babel/preset-typescript", "@babel/preset-env"],
-    "plugins": [
-        "@babel/plugin-transform-object-rest-spread",
-        "@babel/plugin-transform-optional-chaining"
-    ]
-}
