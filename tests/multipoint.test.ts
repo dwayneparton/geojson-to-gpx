@@ -1,3 +1,4 @@
+import { expect, test } from "vitest";
 
 import GeoJsonToGpx from "../src/index";
 import { Feature, MultiPoint } from "geojson";
