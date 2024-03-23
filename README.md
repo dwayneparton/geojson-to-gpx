@@ -9,8 +9,8 @@ Can be used with Node though by doing something like:
 ```js
   import { DOMImplementation } from '@xmldom/xmldom';
   import GeoJsonToGpx from "@dwayneparton/geojson-to-gpx"
-  global.document = {implementation: new DOMImplementation()};
-  const gpx = GeoJsonToGpx(geojson, options);
+  const implementation = new DOMImplementation();
+  const gpx = GeoJsonToGpx(geojson, options, implementation);
 ```
 
 ## Contributions
