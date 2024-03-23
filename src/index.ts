@@ -54,9 +54,9 @@ export declare interface Options{
  * @returns XMLDocument
  * @see http://www.topografix.com/GPX/1/1/
  */
-export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, options?: Options): XMLDocument {
+export default function GeoJsonToGpx(geoJson: Feature | FeatureCollection, options?: Options, implementation: DOMImplementation=document.implementation): XMLDocument {
   // Create root XMLDocument
-  const doc = document.implementation.createDocument('http://www.topografix.com/GPX/1/1', '');
+  const doc = implementation.createDocument('http://www.topografix.com/GPX/1/1', '');
   const instruct = doc.createProcessingInstruction('xml', 'version="1.0" encoding="UTF-8"');
   doc.appendChild(instruct);
 
